@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Recycle, TreePine, Leaf, Box, Phone } from 'lucide-react';
+import { Recycle, TreePine, Leaf, Box, Phone, LogOut } from 'lucide-react';
 
 const VendorHome = () => {
   const [items, setItems] = useState([]);
@@ -38,6 +38,11 @@ const VendorHome = () => {
     }
   };
 
+  const handleLogout = () => {
+    // Implement logout logic here
+    console.log('Logout clicked');
+  };
+
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
       {/* Animated Background */}
@@ -70,6 +75,12 @@ const VendorHome = () => {
             <h1 className="text-3xl font-bold text-gray-800 flex items-center">
               <Recycle className="mr-2" /> Vendor Dashboard
             </h1>
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center"
+            >
+              <LogOut className="mr-2" size={18} /> Logout
+            </button>
           </div>
 
           {/* Search, Sort, and Filter Controls */}
@@ -79,12 +90,12 @@ const VendorHome = () => {
               placeholder="Search items..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 px-4 py-2 rounded-lg bg-white/50 border border-gray-200 focus:ring-2 focus:ring-green-500"
+              className="flex-1 px-4 py-2 rounded-lg bg-white/50 border border-gray-200 focus:ring-2 focus:ring-green-500 focus:outline-none focus:border-transparent"
             />
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="px-4 py-2 rounded-lg bg-white/50 border border-gray-200 focus:ring-2 focus:ring-green-500"
+              className="px-4 py-2 rounded-lg bg-white/50 border border-gray-200 focus:ring-2 focus:ring-green-500 focus:outline-none focus:border-transparent"
             >
               <option value="newest">Newest First</option>
               <option value="oldest">Oldest First</option>
@@ -94,7 +105,7 @@ const VendorHome = () => {
             <select
               value={selectedCity}
               onChange={handleCityChange}
-              className="px-4 py-2 rounded-lg bg-white/50 border border-gray-200 focus:ring-2 focus:ring-green-500"
+              className="px-4 py-2 rounded-lg bg-white/50 border border-gray-200 focus:ring-2 focus:ring-green-500 focus:outline-none focus:border-transparent"
             >
               <option value="">All Cities</option>
               {cities.map((city) => (
