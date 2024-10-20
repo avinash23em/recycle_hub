@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Recycle, TreePine, Leaf, Box } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Recycle, TreePine, Leaf, Box, LogOut } from 'lucide-react';
 
 const UserHome = () => {
   const [itemName, setItemName] = useState('');
@@ -12,12 +12,30 @@ const UserHome = () => {
   const [itemCategory, setItemCategory] = useState('');
   const [itemDescription, setItemDescription] = useState('');
   const [imagePreview, setImagePreview] = useState(null);
+  const [number,setnumber]=useState(null);
   const [activeTab, setActiveTab] = useState('items'); // 'items' or 'form'
+
+  // Auto-dismiss notification after 3 seconds
+  useEffect(() => {
+    if (notification) {
+      const timer = setTimeout(() => {
+        setNotification(null);
+      }, 3000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [notification]);
 
   const categories = [
     'Paper', 'Plastic', 'Glass', 'Metal', 'Electronics', 
     'Furniture', 'Clothing', 'Books', 'Others'
   ];
+
+  const handleLogout = () => {
+    // Add your logout logic here
+    // For example: clear local storage, redirect to login page, etc.
+    window.location.href = '/login'; // or use your routing method
+  };
 
   const getFilteredAndSortedItems = () => {
     let filteredItems = items.filter(item =>
@@ -64,6 +82,7 @@ const UserHome = () => {
       category: itemCategory,
       city: selectedCity,
       image: imagePreview,
+      contact_number:number,
       createdAt: new Date().toISOString(),
       status: 'available'
     };
@@ -75,6 +94,7 @@ const UserHome = () => {
     setItemCategory('');
     setSelectedCity('');
     setImagePreview(null);
+    setnumber(null);
     setActiveTab('items');
   };
   
@@ -103,11 +123,13 @@ const UserHome = () => {
         </div>
       </div>
       
-      {/* Notification Toast */}
+      {/* Notification Toast - Added animation classes */}
       {notification && (
-        <div className={`fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transition-all transform translate-y-0 ${
-          notification.type === 'error' ? 'bg-red-500' : 'bg-green-500'
-        } text-white`}>
+        <div 
+          className={`fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transition-all duration-300 transform
+            ${notification.type === 'error' ? 'bg-red-500' : 'bg-green-500'} 
+            text-white animate-fadeIn`}
+        >
           {notification.message}
         </div>
       )}
@@ -118,30 +140,41 @@ const UserHome = () => {
             <h1 className="text-3xl font-bold text-gray-800 flex items-center">
               <Recycle className="mr-2" /> Recycle Hub
             </h1>
-            <div className="flex gap-2">
+            <div className="flex gap-4 items-center">
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setActiveTab('items')}
+                  className={`px-4 py-2 rounded-lg transition-all ${
+                    activeTab === 'items' 
+                      ? 'bg-green-500 text-white' 
+                      : 'bg-gray-100 hover:bg-gray-200'
+                  }`}
+                >
+                  View Items
+                </button>
+                <button
+                  onClick={() => setActiveTab('form')}
+                  className={`px-4 py-2 rounded-lg transition-all ${
+                    activeTab === 'form' 
+                      ? 'bg-green-500 text-white' 
+                      : 'bg-gray-100 hover:bg-gray-200'
+                  }`}
+                >
+                  List New Item
+                </button>
+              </div>
+              {/* Logout Button */}
               <button
-                onClick={() => setActiveTab('items')}
-                className={`px-4 py-2 rounded-lg transition-all ${
-                  activeTab === 'items' 
-                    ? 'bg-green-500 text-white' 
-                    : 'bg-gray-100 hover:bg-gray-200'
-                }`}
+                onClick={handleLogout}
+                className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
               >
-                View Items
-              </button>
-              <button
-                onClick={() => setActiveTab('form')}
-                className={`px-4 py-2 rounded-lg transition-all ${
-                  activeTab === 'form' 
-                    ? 'bg-green-500 text-white' 
-                    : 'bg-gray-100 hover:bg-gray-200'
-                }`}
-              >
-                List New Item
+                <LogOut size={18} />
+                Logout
               </button>
             </div>
           </div>
 
+          {/* Rest of your existing code remains the same */}
           {activeTab === 'items' ? (
             <>
               {/* Search and Sort Controls */}
@@ -180,6 +213,7 @@ const UserHome = () => {
                       </div>
                       <p className="text-gray-600 text-sm mb-2">{item.description || 'No description provided'}</p>
                       <p className="text-sm text-gray-500">Listed: {new Date(item.createdAt).toLocaleDateString()}</p>
+                      <p className="text-sm text-gray-500 mb-2">Contact: {item.contact_number}</p>
                       <div className="mt-4 flex justify-between items-center">
                         <button
                           className="text-red-500 hover:text-red-600 transition-colors"
@@ -205,7 +239,7 @@ const UserHome = () => {
             </>
           ) : (
             <>
-              {/* Item Submission Form */}
+              {/* Form section remains the same */}
               <form onSubmit={handleItemSubmit} className="space-y-4">
                 <div>
                   <label htmlFor="itemName" className="block text-sm font-medium text-gray-700 mb-2">Item Name</label>
@@ -281,6 +315,18 @@ const UserHome = () => {
                     <img src={imagePreview} alt="Preview" className="mt-2 w-full h-40 object-cover rounded-lg" />
                   )}
                 </div>
+                <div>
+  <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+  <input
+    type="tel"
+    id="phoneNumber"
+    value={number}
+    onChange={(e) => setnumber(e.target.value)}
+    className="w-full px-4 py-2 rounded-lg bg-white/50 border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+    required
+    placeholder="Enter your phone number"
+  />
+ </div>
                 <button
                   type="submit"
                   className="w-full px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
@@ -299,12 +345,31 @@ const UserHome = () => {
           50% { transform: translateY(-20px) rotate(180deg); }
         }
 
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(-10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
         .animate-float {
           animation: float 15s infinite;
         }
 
+        .animate-fadeIn {
+          animation: fadeIn 0.3s ease-out;
+        }
+
         .scale-102 {
-          transform: scale(1.02);
+          transform scale(1.02);
+        }
+
+        @keyframes fadeOut {
+          0% { opacity: 1; transform: translateY(0); }
+          90% { opacity: 1; transform: translateY(0); }
+          100% { opacity: 0; transform: translateY(-10px); }
+        }
+
+        .animate-fadeOut {
+          animation: fadeOut 3s forwards;
         }
       `}</style>
     </div>
