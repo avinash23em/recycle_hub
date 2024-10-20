@@ -248,7 +248,7 @@ const UserHome = () => {
                     id="itemName"
                     value={itemName}
                     onChange={(e) => setItemName(e.target.value)}
-                    className="w-full px-4 py-2 rounded-lg bg-white/50 border border-gray-200 focus:ring-2 focus:ring-green-500"
+                    className="w-full px-4 py-2 rounded-lg bg-white/50 border border-gray-200 focus:ring-2 focus:ring-green-500 focus:outline-none focus:border-transparent"
                     required
                   />
                 </div>
@@ -258,7 +258,7 @@ const UserHome = () => {
                     id="itemDescription"
                     value={itemDescription}
                     onChange={(e) => setItemDescription(e.target.value)}
-                    className="w-full px-4 py-2 rounded-lg bg-white/50 border border-gray-200 focus:ring-2 focus:ring-green-500"
+                    className="w-full px-4 py-2 rounded-lg bg-white/50 border border-gray-200 focus:ring-2 focus:ring-green-500 focus:outline-none focus:border-transparent"
                     rows="3"
                     required
                   ></textarea>
@@ -269,7 +269,7 @@ const UserHome = () => {
                     id="itemCategory"
                     value={itemCategory}
                     onChange={(e) => setItemCategory(e.target.value)}
-                    className="w-full px-4 py-2 rounded-lg bg-white/50 border border-gray-200 focus:ring-2 focus:ring-green-500"
+                    className="w-full px-4 py-2 rounded-lg bg-white/50 border border-gray-200 focus:ring-2 focus:ring-green-500 focus:outline-none focus:border-transparent"
                     required
                   >
                     <option value="">Select a category</option>
@@ -284,7 +284,7 @@ const UserHome = () => {
                     id="city"
                     value={selectedCity}
                     onChange={handleCityChange}
-                    className="w-full px-4 py-2 rounded-lg bg-white/50 border border-gray-200 focus:ring-2 focus:ring-green-500"
+                    className="w-full px-4 py-2 rounded-lg bg-white/50 border border-gray-200 focus:ring-2 focus:ring-green-500 focus:outline-none focus:border-transparent"
                     required
                   >
                     <option value="">Select a city</option>
@@ -309,7 +309,7 @@ const UserHome = () => {
                         reader.readAsDataURL(file);
                       }
                     }}
-                    className="w-full px-4 py-2 rounded-lg bg-white/50 border border-gray-200 focus:ring-2 focus:ring-green-500"
+                    className="w-full px-4 py-2 rounded-lg bg-white/50 border border-gray-200 focus:ring-2 focus:ring-green-500 focus:outline-none focus:border-transparent"
                   />
                   {imagePreview && (
                     <img src={imagePreview} alt="Preview" className="mt-2 w-full h-40 object-cover rounded-lg" />
@@ -322,14 +322,14 @@ const UserHome = () => {
     id="phoneNumber"
     value={number}
     onChange={(e) => setnumber(e.target.value)}
-    className="w-full px-4 py-2 rounded-lg bg-white/50 border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+    className="w-full px-4 py-2 rounded-lg bg-white/50 border border-gray-200 focus:ring-2 focus:ring-green-500 focus:outline-none focus:border-transparent"
     required
     placeholder="Enter your phone number"
   />
  </div>
                 <button
                   type="submit"
-                  className="w-full px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+                  className="w-full px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors focus:outline-none focus:border-transparent"
                 >
                   List Item
                 </button>
