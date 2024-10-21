@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Item = require('../models/item');
 
-// GET all items
+// Get all items (for vendor to view)
 router.get('/', async (req, res) => {
   try {
     const items = await Item.find();
@@ -12,17 +12,24 @@ router.get('/', async (req, res) => {
   }
 });
 
-// POST a new item
+// Add new item (for user to list item)
 router.post('/', async (req, res) => {
-  const item = new Item(req.body);
   try {
-    const newItem = await item.save();
-    res.status(201).json(newItem);
+    const newItem = new Item({
+      name: req.body.name,
+      description: req.body.description,
+      category: req.body.category,
+      city: req.body.city,
+      contact_number: req.body.contact_number,
+      image: req.body.image || '',
+      userId: req.body.userId
+    });
+
+    const savedItem = await newItem.save();
+    res.status(201).json(savedItem);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 });
-
-// Add more routes for updating and deleting items
 
 module.exports = router;
