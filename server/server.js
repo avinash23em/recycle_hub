@@ -1,19 +1,19 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
+const connectDB = require('./config/db');  // Use the correct path
 require('dotenv').config();
 
 const app = express();
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Connect to MongoDB (we'll set this up in the next step)
-require('./config/db');
+// Connect to database
+connectDB();
 
-// Routes (we'll add these later)
-app.use('/api/items', require('./routes/item'));
-
+// Routes
+app.use('/api/items', require('./routes/item'));  // Fixed route import
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

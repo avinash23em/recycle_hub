@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Item = require('../models/item');
 
-// Get all items (for vendor to view)
+
 router.get('/', async (req, res) => {
   try {
     const items = await Item.find();
@@ -20,9 +20,8 @@ router.post('/', async (req, res) => {
       description: req.body.description,
       category: req.body.category,
       city: req.body.city,
-      contact_number: req.body.contact_number,
       image: req.body.image || '',
-      userId: req.body.userId
+      contact_number: req.body.contact_number,
     });
 
     const savedItem = await newItem.save();

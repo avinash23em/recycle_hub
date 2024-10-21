@@ -17,15 +17,13 @@ const itemSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  contact_number: {
-    type: String,
-    required: true
-  },
+  
   image: {
     type: String
   },
-  userId: {
-    type: String
+  contact_number: {
+    type: String,
+    required: true
   },
   createdAt: {
     type: Date,
