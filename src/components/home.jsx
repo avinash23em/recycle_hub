@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Recycle, TreePine, Leaf, Box, LogOut } from 'lucide-react';
+import axios from 'axios';
 
 const UserHome = () => {
   const [itemName, setItemName] = useState('');
@@ -12,10 +13,18 @@ const UserHome = () => {
   const [itemCategory, setItemCategory] = useState('');
   const [itemDescription, setItemDescription] = useState('');
   const [imagePreview, setImagePreview] = useState(null);
-  const [number,setnumber]=useState(null);
-  const [activeTab, setActiveTab] = useState('items'); // 'items' or 'form'
+  const [number, setNumber] = useState(null);
+  const [activeTab, setActiveTab] = useState('items');
 
-  // Auto-dismiss notification after 3 seconds
+  const categories = [
+    'Paper', 'Plastic', 'Glass', 'Metal', 'Electronics', 
+    'Furniture', 'Clothing', 'Books', 'Others'
+  ];
+
+  useEffect(() => {
+    fetchItems();
+  }, []);
+
   useEffect(() => {
     if (notification) {
       const timer = setTimeout(() => {
@@ -26,10 +35,15 @@ const UserHome = () => {
     }
   }, [notification]);
 
-  const categories = [
-    'Paper', 'Plastic', 'Glass', 'Metal', 'Electronics', 
-    'Furniture', 'Clothing', 'Books', 'Others'
-  ];
+  const fetchItems = async () => {
+    try {
+      const response = await axios.get('/api/items');
+      setItems(response.data);
+    } catch (error) {
+      console.error('Error fetching items:', error);
+      setNotification({ type: 'error', message: 'Failed to fetch items' });
+    }
+  };
 
   const handleLogout = () => {
     // Add your logout logic here
@@ -38,7 +52,8 @@ const UserHome = () => {
   };
 
   const getFilteredAndSortedItems = () => {
-    let filteredItems = items.filter(item =>
+    if (!Array.isArray(items)) return [];
+      let filteredItems = items.filter(item =>
       item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.description.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -57,45 +72,66 @@ const UserHome = () => {
     }
   };
 
-  const deleteItem = (id) => {
-    setItems(items.filter(item => item.id !== id));
-    setNotification({ type: 'success', message: 'Item deleted successfully' });
+  const deleteItem = async (id) => {
+    try {
+      await axios.delete(`/api/items/${id}`);
+      setItems(items.filter(item => item._id !== id));
+      setNotification({ type: 'success', message: 'Item deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting item:', error);
+      setNotification({ type: 'error', message: 'Failed to delete item' });
+    }
   };
 
-  const markAsRecycled = (id) => {
-    setItems(items.map(item =>
-      item.id === id ? { ...item, status: 'recycled' } : item
-    ));
-    setNotification({ type: 'success', message: 'Item marked as recycled' });
+  const markAsRecycled = async (id) => {
+    try {
+      const response = await axios.patch(`/api/items/${id}`, { status: 'recycled' });
+      setItems(items.map(item =>
+        item._id === id ? response.data : item
+      ));
+      setNotification({ type: 'success', message: 'Item marked as recycled' });
+    } catch (error) {
+      console.error('Error marking item as recycled:', error);
+      setNotification({ type: 'error', message: 'Failed to mark item as recycled' });
+    }
   };
 
   const handleCityChange = (e) => {
     setSelectedCity(e.target.value);
   };
 
-  const handleItemSubmit = (e) => {
+  const handleItemSubmit = async (e) => {
     e.preventDefault();
-    const newItem = {
-      id: Date.now(),
-      name: itemName,
-      description: itemDescription,
-      category: itemCategory,
-      city: selectedCity,
-      image: imagePreview,
-      contact_number:number,
-      createdAt: new Date().toISOString(),
-      status: 'available'
-    };
-    setItems([newItem, ...items]);
-    setNotification({ type: 'success', message: 'Item added successfully' });
-    // Reset form fields
-    setItemName('');
-    setItemDescription('');
-    setItemCategory('');
-    setSelectedCity('');
-    setImagePreview(null);
-    setnumber(null);
-    setActiveTab('items');
+    const formData = new FormData();
+    formData.append('name', itemName);
+    formData.append('description', itemDescription);
+    formData.append('category', itemCategory);
+    formData.append('city', selectedCity);
+    formData.append('contact_number', number);
+    if (imagePreview) {
+      formData.append('image', imagePreview);
+    }
+
+    try {
+      const response = await axios.post('/api/items', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      setItems([response.data, ...items]);
+      setNotification({ type: 'success', message: 'Item added successfully' });
+      // Reset form fields
+      setItemName('');
+      setItemDescription('');
+      setItemCategory('');
+      setSelectedCity('');
+      setImagePreview(null);
+      setNumber(null);
+      setActiveTab('items');
+    } catch (error) {
+      console.error('Error adding item:', error);
+      setNotification({ type: 'error', message: 'Failed to add item' });
+    }
   };
   
   return (
