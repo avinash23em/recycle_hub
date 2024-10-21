@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
-const connectDB = require('./config/db');  // Use the correct path
+const router = express.Router();
+const connectDB = require('./config/db');  
 require('dotenv').config();
 
 const app = express();
@@ -13,7 +14,7 @@ app.use(express.json());
 connectDB();
 
 // Routes
-app.use('/api/items', require('./routes/item'));  // Fixed route import
+app.use('/api/items', require('./routes/item'));  
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

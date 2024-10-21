@@ -46,9 +46,8 @@ const UserHome = () => {
   };
 
   const handleLogout = () => {
-    // Add your logout logic here
-    // For example: clear local storage, redirect to login page, etc.
-    window.location.href = '/login'; // or use your routing method
+    
+    window.location.href = '/user-login'; 
   };
 
   const getFilteredAndSortedItems = () => {
@@ -120,7 +119,7 @@ const UserHome = () => {
       });
       setItems([response.data, ...items]);
       setNotification({ type: 'success', message: 'Item added successfully' });
-      // Reset form fields
+      
       setItemName('');
       setItemDescription('');
       setItemCategory('');
@@ -136,7 +135,7 @@ const UserHome = () => {
   
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
-      {/* Animated Background */}
+     
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           {[...Array(20)].map((_, i) => (
@@ -159,7 +158,7 @@ const UserHome = () => {
         </div>
       </div>
       
-      {/* Notification Toast - Added animation classes */}
+      
       {notification && (
         <div 
           className={`fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transition-all duration-300 transform
@@ -199,7 +198,7 @@ const UserHome = () => {
                   List New Item
                 </button>
               </div>
-              {/* Logout Button */}
+              
               <button
                 onClick={handleLogout}
                 className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
@@ -210,10 +209,10 @@ const UserHome = () => {
             </div>
           </div>
 
-          {/* Rest of your existing code remains the same */}
+          
           {activeTab === 'items' ? (
             <>
-              {/* Search and Sort Controls */}
+              
               <div className="mb-6 flex flex-wrap gap-4">
                 <input
                   type="text"
@@ -234,7 +233,7 @@ const UserHome = () => {
                 </select>
               </div>
 
-              {/* Items Grid */}
+              
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {getFilteredAndSortedItems().map((item) => (
                   <div key={item.id} 

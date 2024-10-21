@@ -1,45 +1,38 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Recycle, TreePine, Leaf, Box, Phone, LogOut } from 'lucide-react';
-import axios from 'axios';
 
 const VendorHome = () => {
-  const [items, setItems] = useState([]);
   const [selectedCity, setSelectedCity] = useState('');
   const [cities] = useState(['Delhi', 'Mumbai', 'Bangalore', 'Chennai', 'Kolkata']);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('newest');
-  const [notification, setNotification] = useState(null);
 
-  useEffect(() => {
-    fetchItems();
-  }, []);
-
-  useEffect(() => {
-    if (notification) {
-      const timer = setTimeout(() => {
-        setNotification(null);
-      }, 3000);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [notification]);
-
-  const fetchItems = async () => {
-    try {
-      const response = await axios.get('/api/items');
-      setItems(response.data);
-    } catch (error) {
-      console.error('Error fetching items:', error);
-      setNotification({ type: 'error', message: 'Failed to fetch items' });
-    }
-  };
-
-  const handleCityChange = (e) => {
-    setSelectedCity(e.target.value);
-  };
+  const sampleItems = [
+    {
+      _id: '1',
+      name: 'Recycled Plastic Bottles',
+      description: 'Variety of recycled plastic bottles in different colors and sizes',
+      category: 'Plastic',
+      image: 'https://via.placeholder.com/300x200',
+      createdAt: '2023-04-01',
+      city: 'Delhi',
+      contact_number: '1234567890'
+    },
+    {
+      _id: '2',
+      name: 'Upcycled Cardboard Furniture',
+      description: 'Unique and eco-friendly cardboard furniture pieces',
+      category: 'Furniture',
+      image: 'https://via.placeholder.com/300x200',
+      createdAt: '2023-03-15',
+      city: 'Mumbai',
+      contact_number: '0987654321'
+    },
+    // Add more sample items here
+  ];
 
   const getFilteredAndSortedItems = () => {
-    let filteredItems = items.filter(item =>
+    let filteredItems = sampleItems.filter(item =>
       (selectedCity === '' || item.city === selectedCity) &&
       (item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
        item.description.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -60,22 +53,13 @@ const VendorHome = () => {
   };
 
   const handleLogout = () => {
-    // Implement logout logic here
-    // For example: clear token from localStorage, redirect to login page
     localStorage.removeItem('token');
-    window.location.href = '/login';
+    window.location.href = '/vendor-login';
   };
 
-  const handleContactUser = async (itemId) => {
-    try {
-      // This is a placeholder. You might want to implement this differently
-      // depending on your backend structure and requirements
-      await axios.post(`/api/contact/${itemId}`);
-      setNotification({ type: 'success', message: 'Contact request sent successfully' });
-    } catch (error) {
-      console.error('Error contacting user:', error);
-      setNotification({ type: 'error', message: 'Failed to send contact request' });
-    }
+  const handleContactUser = (itemId) => {
+    // This is a placeholder. You can add your own logic here
+    console.log('Contacting user for item:', itemId);
   };
 
   return (
@@ -85,26 +69,60 @@ const VendorHome = () => {
         {/* ... (keep the existing animated background code) */}
       </div>
 
-      {/* Notification Toast */}
-      {notification && (
-        <div 
-          className={`fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transition-all duration-300 transform
-            ${notification.type === 'error' ? 'bg-red-500' : 'bg-green-500'} 
-            text-white animate-fadeIn`}
-        >
-          {notification.message}
-        </div>
-      )}
-
       <div className="container mx-auto p-4 relative z-10">
         <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl p-6 mb-8">
-          {/* ... (keep the existing header and search/filter controls) */}
+          {/* Header */}
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-2xl font-bold">Recycle Hub</h1>
+            <button onClick={handleLogout} className="px-3 py-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors">
+              <LogOut size={18} />
+              Logout
+            </button>
+          </div>
+
+          {/* Search and Filters */}
+          <div className="flex items-center space-x-4 mb-4">
+            <div className="flex-1">
+              <input
+                type="text"
+                placeholder="Search items..."
+                className="w-full px-4 py-2 rounded-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <div>
+              <select
+                value={selectedCity}
+                onChange={handleCityChange}
+                className="px-4 py-2 rounded-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500"
+              >
+                <option value="">All Cities</option>
+                {cities.map((city) => (
+                  <option key={city} value={city}>
+                    {city}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="px-4 py-2 rounded-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500"
+              >
+                <option value="newest">Newest</option>
+                <option value="oldest">Oldest</option>
+                <option value="nameAsc">Name (A-Z)</option>
+                <option value="nameDesc">Name (Z-A)</option>
+              </select>
+            </div>
+          </div>
 
           {/* Items Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {getFilteredAndSortedItems().map((item) => (
-              <div key={item._id} 
-                className="bg-white rounded-lg shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-102 group">
+              <div key={item._id} className="bg-white rounded-lg shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-102 group">
                 {item.image && <img src={item.image} alt={item.name} className="w-full h-48 object-cover transition-transform group-hover:scale-105" />}
                 <div className="p-4">
                   <div className="flex justify-between items-start mb-2">
@@ -118,7 +136,7 @@ const VendorHome = () => {
                   <p className="text-sm text-gray-500">City: {item.city}</p>
                   <p className="text-sm text-gray-500">Phone: {item.contact_number}</p>
                   <div className="mt-4 flex justify-end">
-                    <button 
+                    <button
                       onClick={() => handleContactUser(item._id)}
                       className="px-3 py-1 bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors"
                     >
@@ -132,31 +150,37 @@ const VendorHome = () => {
         </div>
       </div>
 
-      <style jsx>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0) rotate(0deg); }
-          50% { transform: translateY(-20px) rotate(180deg); }
-        }
+      <style jsx global>
+        {`
+          @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+          }
 
-        .animate-float {
-          animation: float 15s infinite;
-        }
+          .animate-float {
+            animation: float 15s infinite;
+          }
 
-        .scale-102 {
-          transform: scale(1.02);
-        }
+          .scale-102 {
+            transform: scale(1.02);
+          }
 
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(-10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
+          @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
 
-        .animate-fadeIn {
-          animation: fadeIn 0.3s ease-out;
-        }
-      `}</style>
+          .animate-fadeIn {
+            animation: fadeIn 0.3s ease-out;
+          }
+        `}
+      </style>
     </div>
   );
+
+  function handleCityChange(e) {
+    setSelectedCity(e.target.value);
+  }
 };
 
 export default VendorHome;
