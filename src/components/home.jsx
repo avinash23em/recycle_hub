@@ -37,7 +37,7 @@ const UserHome = () => {
 
   const fetchItems = async () => {
     try {
-      const response = await axios.get('/api/items');
+      const response = await axios.get('http://localhost:5000/api/items');
       setItems(response.data);
     } catch (error) {
       console.error('Error fetching items:', error);
@@ -73,7 +73,7 @@ const UserHome = () => {
 
   const deleteItem = async (id) => {
     try {
-      await axios.delete(`/api/items/${id}`);
+      await axios.delete(`http://localhost:5000/api/items/${id}`);
       setItems(items.filter(item => item._id !== id));
       setNotification({ type: 'success', message: 'Item deleted successfully' });
     } catch (error) {
@@ -84,7 +84,7 @@ const UserHome = () => {
 
   const markAsRecycled = async (id) => {
     try {
-      const response = await axios.patch(`/api/items/${id}`, { status: 'recycled' });
+      const response = await axios.patch(`'http://localhost:5000/api/items/${id}`, { status: 'recycled' });
       setItems(items.map(item =>
         item._id === id ? response.data : item
       ));
@@ -106,13 +106,13 @@ const UserHome = () => {
     formData.append('description', itemDescription);
     formData.append('category', itemCategory);
     formData.append('city', selectedCity);
-    formData.append('contact_number', number);
     if (imagePreview) {
       formData.append('image', imagePreview);
     }
+    formData.append('contact_number', number);
 
     try {
-      const response = await axios.post('/api/items', formData, {
+      const response = await axios.post('http://localhost:5000/api/items', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }

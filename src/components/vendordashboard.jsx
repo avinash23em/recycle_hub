@@ -1,38 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { Recycle, TreePine, Leaf, Box, Phone, LogOut } from 'lucide-react';
 
 const VendorHome = () => {
+  const [items, setItems] = useState([]); 
   const [selectedCity, setSelectedCity] = useState('');
   const [cities] = useState(['Delhi', 'Mumbai', 'Bangalore', 'Chennai', 'Kolkata']);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('newest');
 
-  const sampleItems = [
-    {
-      _id: '1',
-      name: 'Recycled Plastic Bottles',
-      description: 'Variety of recycled plastic bottles in different colors and sizes',
-      category: 'Plastic',
-      image: 'https://via.placeholder.com/300x200',
-      createdAt: '2023-04-01',
-      city: 'Delhi',
-      contact_number: '1234567890'
-    },
-    {
-      _id: '2',
-      name: 'Upcycled Cardboard Furniture',
-      description: 'Unique and eco-friendly cardboard furniture pieces',
-      category: 'Furniture',
-      image: 'https://via.placeholder.com/300x200',
-      createdAt: '2023-03-15',
-      city: 'Mumbai',
-      contact_number: '0987654321'
-    },
-    // Add more sample items here
-  ];
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get('http://localhost:5000/api/items');
+        setItems(response.data);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching items:', err);
+        setError('Failed to fetch items');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchItems();
+  }, []);
 
   const getFilteredAndSortedItems = () => {
-    let filteredItems = sampleItems.filter(item =>
+    // Replace sampleItems with items state
+    let filteredItems = items.filter(item =>
       (selectedCity === '' || item.city === selectedCity) &&
       (item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
        item.description.toLowerCase().includes(searchQuery.toLowerCase()))
